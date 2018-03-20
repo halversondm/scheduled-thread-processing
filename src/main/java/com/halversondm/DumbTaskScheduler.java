@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class DumbTaskScheduler implements ApplicationContextAware {
@@ -33,10 +35,20 @@ public class DumbTaskScheduler implements ApplicationContextAware {
             dumbStringList.add("Hello " + i);
         }
 
+        CountDownLatch countDownLatch = new CountDownLatch(70);
+
         dumbStringList.forEach(s -> {
-            Runnable runnable = (Runnable) applicationContext.getBean("dumbTask", s);
+            LOGGER.info("executing message # {}", s);
+            Runnable runnable = (Runnable) applicationContext.getBean("dumbTask", s, countDownLatch);
             dumbTaskExecutor.execute(runnable);
         });
+
+        try {
+            LOGGER.info("waiting for count down latch to expire at 2 minutes or less");
+            countDownLatch.await(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            LOGGER.error("", e);
+        }
 
         LOGGER.info("Stop DumbTaskScheduler");
 
