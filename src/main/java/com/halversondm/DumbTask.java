@@ -24,12 +24,13 @@ public class DumbTask implements Runnable {
 
     public void run() {
 
-        LOGGER.info(message);
+        LOGGER.info("Start {}", message);
         try {
             sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        LOGGER.info("Stop {}", message);
     }
 }
