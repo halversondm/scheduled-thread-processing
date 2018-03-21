@@ -1,0 +1,7 @@
+threadPool:
+  maxQueue: 50
+  maxPool: 10
+  corePool: 5
+
+scheduler:
+  poolSize: 5

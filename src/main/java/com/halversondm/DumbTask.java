@@ -8,28 +8,30 @@ import org.springframework.stereotype.Component;
 import static java.lang.Thread.sleep;
 
 /**
- * Point is to run for 30 seconds
+ * Point is to run for a number of milliseconds to simulate some task in progress.
  */
 @Component
 @Scope("prototype")
 public class DumbTask implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DumbTask.class);
+    Integer sleepMillis;
 
     String message;
 
-    public DumbTask(String message) {
+    public DumbTask(String message, Integer sleepMillis) {
         this.message = message;
+        this.sleepMillis = sleepMillis;
     }
 
     public void run() {
 
-        LOGGER.info(message);
+        LOGGER.info("Start {}", message);
         try {
             sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        LOGGER.info("Stop {}", message);
     }
 }
