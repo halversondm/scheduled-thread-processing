@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>scheduled-thread-processing</name>
-	<description>Scheduld Thread Processing</description>
+	<description>Scheduled Thread Processing</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

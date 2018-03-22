@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Future;
 
 import static java.lang.Thread.sleep;
@@ -21,6 +22,8 @@ public class DumbTaskScheduler implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DumbTaskScheduler.class);
 
+    private static final Integer[] workTimeMillis = {5000, 10000, 30000};
+
     @Autowired
     ThreadPoolTaskExecutor dumbTaskExecutor;
 
@@ -28,18 +31,17 @@ public class DumbTaskScheduler implements ApplicationContextAware {
 
     @Scheduled(fixedDelay = 60000)
     public void process() {
-
         LOGGER.info("Start DumbTaskScheduler");
-
+        final Random random = new Random();
         List<String> dumbStringList = new ArrayList<>();
         final List<Future> futureList = new ArrayList<>();
         for (int i = 0; i < 70; i++) {
             dumbStringList.add("Hello " + i);
         }
-
         dumbStringList.forEach(s -> {
             LOGGER.info("executing message # {}", s);
-            DumbTask dumbTask = (DumbTask) applicationContext.getBean("dumbTask", s);
+            int next = random.nextInt(2);
+            DumbTask dumbTask = (DumbTask) applicationContext.getBean("dumbTask", s, workTimeMillis[next]);
             Future future = dumbTaskExecutor.submit(dumbTask);
             futureList.add(future);
         });
@@ -65,11 +67,11 @@ public class DumbTaskScheduler implements ApplicationContextAware {
         }
 
         LOGGER.info("Stop DumbTaskScheduler");
-
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 }
