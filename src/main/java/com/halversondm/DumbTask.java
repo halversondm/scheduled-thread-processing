@@ -10,34 +10,35 @@ import java.util.concurrent.CountDownLatch;
 import static java.lang.Thread.sleep;
 
 /**
- * Point is to run for 30 seconds
+ * Point is to run for a number of milliseconds to simulate some task in progress.
  */
 @Component
 @Scope("prototype")
 public class DumbTask implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DumbTask.class);
+    Integer sleepMillis;
 
     CountDownLatch countDownLatch;
 
     String message;
 
-    public DumbTask(String message, CountDownLatch countDownLatch) {
+    public DumbTask(String message, CountDownLatch countDownLatch, Integer sleepMillis) {
         this.message = message;
         this.countDownLatch = countDownLatch;
+        this.sleepMillis = sleepMillis;
     }
 
     public void run() {
 
         LOGGER.info("Start {}", message);
         try {
-            sleep(30000);
+            sleep(sleepMillis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             countDownLatch.countDown();
         }
         LOGGER.info("Stop {}", message);
-
     }
 }
